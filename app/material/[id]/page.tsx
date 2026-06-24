@@ -81,7 +81,7 @@ export default function MaterialDetailPage() {
             <div className="flex items-center gap-4 text-sm text-gray-500 flex-wrap">
               <span className="flex items-center gap-1.5"><Hash size={14} /> <span className="font-mono font-semibold text-gray-700">{material.ders_kodu}</span></span>
               {material.donem && <span className="flex items-center gap-1.5"><Calendar size={14} /> {material.donem}</span>}
-              <span className="flex items-center gap-1.5"><UserIcon size={14} /> {material.is_anonymous ? <span className="italic">Anonim</span> : (material.uploader_name || '—')}</span>
+              <span className="flex items-center gap-1.5"><UserIcon size={14} /> {material.is_anonymous ? <span className="italic">Anonim</span> : material.uploader_id ? <Link href={`/u/${material.uploader_id}`} className="hover:text-blue-600 hover:underline transition">{material.uploader_name || '—'}</Link> : (material.uploader_name || '—')}</span>
               <span className="flex items-center gap-1.5"><Calendar size={14} /> {new Date(material.created_at).toLocaleDateString('tr-TR')}</span>
             </div>
           </div>

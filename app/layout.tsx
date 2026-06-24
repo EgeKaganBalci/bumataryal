@@ -4,22 +4,31 @@ import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase'
 import type { User } from '@supabase/supabase-js'
-import { LogIn, LogOut, BookOpen, User as UserIcon } from 'lucide-react'
+import { LogIn, LogOut, BookOpen, User as UserIcon, Settings } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
+  const [displayName, setDisplayName] = useState<string>('')
   const [loading, setLoading] = useState(true)
   const supabase = createClient()
   const router = useRouter()
 
+  const loadProfile = async (u: User | null) => {
+    if (!u) { setDisplayName(''); return }
+    const { data } = await supabase.from('profiles').select('display_name').eq('id', u.id).single()
+    setDisplayName(data?.display_name || u.email?.split('@')[0] || 'Hesabım')
+  }
+
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => {
       setUser(data.user)
+      loadProfile(data.user)
       setLoading(false)
     })
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_e, session) => {
       setUser(session?.user ?? null)
+      loadProfile(session?.user ?? null)
     })
     return () => subscription.unsubscribe()
   }, [])
@@ -44,17 +53,23 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 <div className="text-[10px] text-white/60 leading-tight">Başkent Üniversitesi</div>
               </div>
             </Link>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1">
               {!loading && (
                 <>
                   {user ? (
                     <>
-                      <div className="flex items-center gap-1.5 text-white/70 text-sm px-2">
+                      <Link href={`/u/${user.id}`} title="Profilim"
+                        className="flex items-center gap-1.5 text-white/80 hover:text-white text-sm px-2.5 py-1.5 rounded-lg hover:bg-white/10 transition">
                         <UserIcon size={14} />
-                        <span className="hidden sm:inline text-xs">{user.email?.split('@')[0]}</span>
-                      </div>
-                      <button onClick={handleSignOut} className="flex items-center gap-1.5 text-white/70 hover:text-white text-sm px-2 py-1.5 rounded-lg transition">
-                        <LogOut size={14} />
+                        <span className="hidden sm:inline text-xs font-medium">{displayName}</span>
+                      </Link>
+                      <Link href="/settings" title="Ayarlar"
+                        className="flex items-center text-white/70 hover:text-white p-1.5 rounded-lg hover:bg-white/10 transition">
+                        <Settings size={15} />
+                      </Link>
+                      <button onClick={handleSignOut} title="Çıkış yap"
+                        className="flex items-center text-white/70 hover:text-white p-1.5 rounded-lg hover:bg-white/10 transition">
+                        <LogOut size={15} />
                       </button>
                     </>
                   ) : (

@@ -169,9 +169,21 @@ export default function HomePage() {
                       </Link>
                       {m.file_count > 1 && <span className="ml-2 text-xs text-gray-400">({m.file_count} dosya)</span>}
                     </td>
-                    <td className="px-4 py-3"><span className="font-mono font-semibold text-gray-700">{m.ders_kodu}</span></td>
+                    <td className="px-4 py-3">
+                      <button onClick={() => { setDersKodu(m.ders_kodu); window.scrollTo({ top: 0, behavior: 'smooth' }) }}
+                        title={`${m.ders_kodu} derslerini filtrele`}
+                        className="font-mono font-semibold text-gray-700 hover:text-blue-600 hover:underline transition cursor-pointer">
+                        {m.ders_kodu}
+                      </button>
+                    </td>
                     <td className="px-4 py-3 text-gray-600 whitespace-nowrap">{m.donem || '—'}</td>
-                    <td className="px-4 py-3 text-gray-600">{m.is_anonymous ? <span className="text-gray-400 italic">Anonim</span> : (m.uploader_name || '—')}</td>
+                    <td className="px-4 py-3 text-gray-600">
+                      {m.is_anonymous ? (
+                        <span className="text-gray-400 italic">Anonim</span>
+                      ) : m.uploader_id ? (
+                        <Link href={`/u/${m.uploader_id}`} className="hover:text-blue-600 hover:underline transition">{m.uploader_name || '—'}</Link>
+                      ) : (m.uploader_name || '—')}
+                    </td>
                     <td className="px-4 py-3 text-gray-500 whitespace-nowrap">{new Date(m.created_at).toLocaleDateString('tr-TR')}</td>
                     <td className="px-4 py-3">
                       <div className="flex items-center justify-center gap-1">
