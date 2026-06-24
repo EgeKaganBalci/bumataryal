@@ -97,6 +97,12 @@ export default function MaterialDetailPage() {
           )}
         </div>
 
+        {material.aciklama && (
+          <div className="mt-4 pt-4 border-t border-gray-100">
+            <p className="text-sm text-gray-700 whitespace-pre-wrap leading-relaxed">{material.aciklama}</p>
+          </div>
+        )}
+
         {/* Beğeni */}
         <div className="flex items-center gap-2 mt-4 pt-4 border-t border-gray-100">
           <button onClick={() => handleVote(1)}

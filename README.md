@@ -1,33 +1,33 @@
 # BÜ Materyal — Başkent Üniversitesi Not Paylaşım Platformu
 
-## V2 Güncellemesi — Değişiklikler
+Next.js + Supabase + Vercel ile geliştirilmiş öğrenci ders notu paylaşım platformu.
+
+## Özellikler
 
 - Tablo görünümü: Başlık | Ders Kodu | Dönem | Paylaşan | Tarih | Beğeni | İşlemler
-- Çoklu dosya yükleme (tek paylaşımda birden fazla PDF/DOC/DOCX/PPTX)
-- Beğeni / beğenmeme (kayıtlı kullanıcılar, herkese açık)
+- Çoklu dosya yükleme (PDF, DOC, DOCX, PPTX)
+- Açıklama alanı (1000 karakter, detay sayfasında görünür)
+- Beğeni / beğenmeme (kayıtlı kullanıcılar)
 - Anonim paylaşım seçeneği
-- Kategoriler kaldırıldı (sadece "not")
 - Ders kodu otomatik düzeltme ("eem 301" -> "EEM301")
 - Sayfalama (her sayfada 20 not)
 - Detay sayfasında dosyaları tek tek indirme
 - Yükleyen için düzenleme + silme
 
-## ÖNEMLİ: Veritabanını güncelle
+## Kurulum
 
-V2 için yeni tablolar gerekli. Supabase Dashboard -> SQL Editor -> aşağıdaki dosyayı yapıştır ve çalıştır:
+### 1. Veritabanı (Supabase)
+Supabase Dashboard -> SQL Editor -> `supabase-schema.sql` dosyasını çalıştır.
+(Sıfırdan kurulum için. Mevcut kurulumda sadece yeni değişiklikleri çalıştırmak yeterli.)
 
-```
-supabase-schema-v2.sql
-```
+### 2. Environment Variables (Vercel)
+- `NEXT_PUBLIC_SUPABASE_URL`
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY`
 
-DİKKAT: Bu işlem eski test materyallerini siler (yeni yapı farklı). Profil/kullanıcılar korunur.
-
-## Deploy
-
-Kod GitHub'a push edilince Vercel otomatik yeniden deploy eder. Environment variable'lar aynı kalır.
+### 3. Deploy
+GitHub'a push -> Vercel otomatik deploy eder.
 
 ## Lokal geliştirme
-
 ```bash
 npm install
 npm run dev

@@ -12,6 +12,7 @@ export default function UploadPage() {
   const [baslik, setBaslik] = useState('')
   const [dersKodu, setDersKodu] = useState('')
   const [donem, setDonem] = useState('')
+  const [aciklama, setAciklama] = useState('')
   const [isAnonymous, setIsAnonymous] = useState(false)
   const [files, setFiles] = useState<File[]>([])
   const [uploading, setUploading] = useState(false)
@@ -55,6 +56,7 @@ export default function UploadPage() {
       baslik: baslik.trim(),
       ders_kodu: normalizeDersKodu(dersKodu),
       donem: donem || null,
+      aciklama: aciklama.trim() || null,
       is_anonymous: isAnonymous,
     }).select().single()
 
@@ -90,7 +92,7 @@ export default function UploadPage() {
         <h2 className="text-xl font-bold text-gray-900 mb-2">Not yüklendi!</h2>
         <p className="text-gray-500 mb-6">{files.length} dosya başarıyla paylaşıldı 🎉</p>
         <div className="flex gap-3 justify-center">
-          <button onClick={() => { setSuccess(false); setBaslik(''); setDersKodu(''); setDonem(''); setFiles([]); setIsAnonymous(false) }}
+          <button onClick={() => { setSuccess(false); setBaslik(''); setDersKodu(''); setDonem(''); setAciklama(''); setFiles([]); setIsAnonymous(false) }}
             className="px-4 py-2 text-sm border border-gray-200 rounded-lg hover:bg-gray-50">Başka yükle</button>
           <button onClick={() => router.push('/')} className="px-4 py-2 text-sm text-white rounded-lg" style={{ background: 'var(--bu-navy)' }}>Ana sayfaya dön</button>
         </div>
@@ -127,6 +129,16 @@ export default function UploadPage() {
               {DONEMLER.map(d => <option key={d}>{d}</option>)}
             </select>
           </div>
+        </div>
+
+        <div>
+          <label className="block text-xs font-semibold text-gray-600 mb-1.5">
+            Açıklama <span className="text-gray-400 font-normal">(isteğe bağlı)</span>
+          </label>
+          <textarea value={aciklama} onChange={e => setAciklama(e.target.value.slice(0, 1000))} maxLength={1000} rows={4}
+            placeholder="Notlarla ilgili kısa bir açıklama ekleyebilirsin. örn. Hocanın paylaştığı föyler + kendi çözümlerim. Final için yeterli."
+            className="w-full px-3 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400 resize-none" />
+          <p className="text-xs text-gray-400 mt-1 text-right">{aciklama.length}/1000</p>
         </div>
 
         <div>

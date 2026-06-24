@@ -13,6 +13,7 @@ export interface Material {
   baslik: string
   ders_kodu: string
   donem: string | null
+  aciklama: string | null
   is_anonymous: boolean
   uploader_name: string | null
   likes: number

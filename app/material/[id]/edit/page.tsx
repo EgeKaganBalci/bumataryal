@@ -14,6 +14,7 @@ export default function EditMaterialPage() {
   const [baslik, setBaslik] = useState('')
   const [dersKodu, setDersKodu] = useState('')
   const [donem, setDonem] = useState('')
+  const [aciklama, setAciklama] = useState('')
   const [isAnonymous, setIsAnonymous] = useState(false)
   const [existingFiles, setExistingFiles] = useState<MaterialFile[]>([])
   const [removedIds, setRemovedIds] = useState<string[]>([])
@@ -32,7 +33,7 @@ export default function EditMaterialPage() {
       const { data: mat } = await supabase.from('materials').select('*').eq('id', id).single()
       if (!mat) { router.push('/'); return }
       if (mat.uploader_id !== u.id) { router.push(`/material/${id}`); return }
-      setBaslik(mat.baslik); setDersKodu(mat.ders_kodu); setDonem(mat.donem || ''); setIsAnonymous(mat.is_anonymous)
+      setBaslik(mat.baslik); setDersKodu(mat.ders_kodu); setDonem(mat.donem || ''); setAciklama(mat.aciklama || ''); setIsAnonymous(mat.is_anonymous)
       const { data: files } = await supabase.from('material_files').select('*').eq('material_id', id).order('created_at')
       setExistingFiles((files as MaterialFile[]) || [])
       setLoading(false)
@@ -61,6 +62,7 @@ export default function EditMaterialPage() {
       baslik: baslik.trim(),
       ders_kodu: normalizeDersKodu(dersKodu),
       donem: donem || null,
+      aciklama: aciklama.trim() || null,
       is_anonymous: isAnonymous,
     }).eq('id', id)
 
@@ -117,6 +119,16 @@ export default function EditMaterialPage() {
               {DONEMLER.map(d => <option key={d}>{d}</option>)}
             </select>
           </div>
+        </div>
+
+        <div>
+          <label className="block text-xs font-semibold text-gray-600 mb-1.5">
+            Açıklama <span className="text-gray-400 font-normal">(isteğe bağlı)</span>
+          </label>
+          <textarea value={aciklama} onChange={e => setAciklama(e.target.value.slice(0, 1000))} maxLength={1000} rows={4}
+            placeholder="Notlarla ilgili kısa bir açıklama..."
+            className="w-full px-3 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400 resize-none" />
+          <p className="text-xs text-gray-400 mt-1 text-right">{aciklama.length}/1000</p>
         </div>
 
         <div>

@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase'
 import type { User } from '@supabase/supabase-js'
-import { Upload, LogIn, LogOut, BookOpen, User as UserIcon } from 'lucide-react'
+import { LogIn, LogOut, BookOpen, User as UserIcon } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -49,10 +49,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 <>
                   {user ? (
                     <>
-                      <Link href="/upload" className="flex items-center gap-1.5 bg-white/15 hover:bg-white/25 text-white text-sm px-3 py-1.5 rounded-lg transition">
-                        <Upload size={14} />
-                        <span className="hidden sm:inline">Yükle</span>
-                      </Link>
                       <div className="flex items-center gap-1.5 text-white/70 text-sm px-2">
                         <UserIcon size={14} />
                         <span className="hidden sm:inline text-xs">{user.email?.split('@')[0]}</span>

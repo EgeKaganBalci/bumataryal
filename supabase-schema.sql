@@ -1,59 +1,82 @@
--- Profiles tablosu (auth.users ile bağlantılı)
-create table public.profiles (
-  id uuid references auth.users on delete cascade primary key,
-  email text,
-  display_name text,
-  created_at timestamp with time zone default now()
-);
+-- ============================================
+-- BÜ Materyal — V2 Şema Güncellemesi
+-- Çoklu dosya + beğeni/beğenmeme + anonim + kategorisiz
+-- DİKKAT: Eski materyaller silinecek (test verileri).
+-- Supabase SQL Editor'da çalıştır.
+-- ============================================
 
--- Materials tablosu
+-- Eski materials tablosunu temizle
+drop view if exists public.materials_with_stats cascade;
+drop table if exists public.materials cascade;
+
+-- Materials: her kayıt bir paylaşım (birden çok dosya içerebilir)
 create table public.materials (
   id uuid default gen_random_uuid() primary key,
   created_at timestamp with time zone default now(),
   uploader_id uuid references public.profiles(id) on delete set null,
+  baslik text not null,
   ders_kodu text not null,
-  ders_adi text not null,
-  tur text not null check (tur in ('Föy', 'Vize', 'Final', 'Ödev', 'Quiz', 'Diğer')),
-  fakulte text not null,
-  bolum text not null,
-  donem text not null,
+  donem text,
   aciklama text,
-  dosya_url text,
-  dosya_adi text,
-  indirme_sayisi integer default 0
+  is_anonymous boolean default false
 );
 
--- Storage bucket
-insert into storage.buckets (id, name, public) values ('materials', 'materials', true);
+-- Bir paylaşıma ait dosyalar
+create table public.material_files (
+  id uuid default gen_random_uuid() primary key,
+  material_id uuid references public.materials(id) on delete cascade not null,
+  dosya_url text not null,
+  dosya_adi text not null,
+  created_at timestamp with time zone default now()
+);
 
--- RLS: profiles
-alter table public.profiles enable row level security;
-create policy "Herkes profilleri görebilir" on public.profiles for select using (true);
-create policy "Kullanıcı kendi profilini oluşturabilir" on public.profiles for insert with check (auth.uid() = id);
-create policy "Kullanıcı kendi profilini güncelleyebilir" on public.profiles for update using (auth.uid() = id);
+-- Beğeni / beğenmeme (kullanıcı başına tek oy)
+create table public.votes (
+  material_id uuid references public.materials(id) on delete cascade not null,
+  user_id uuid references public.profiles(id) on delete cascade not null,
+  value smallint not null check (value in (1, -1)),
+  created_at timestamp with time zone default now(),
+  primary key (material_id, user_id)
+);
 
--- RLS: materials
+-- ---- RLS: materials ----
 alter table public.materials enable row level security;
-create policy "Herkes materyalleri görebilir" on public.materials for select using (true);
-create policy "Giriş yapanlar materyal ekleyebilir" on public.materials for insert with check (auth.uid() is not null);
-create policy "Yükleyen kendi materyalini güncelleyebilir" on public.materials for update using (auth.uid() = uploader_id);
-create policy "Yükleyen kendi materyalini silebilir" on public.materials for delete using (auth.uid() = uploader_id);
+create policy "materials_select" on public.materials for select using (true);
+create policy "materials_insert" on public.materials for insert with check (auth.uid() = uploader_id);
+create policy "materials_update" on public.materials for update using (auth.uid() = uploader_id);
+create policy "materials_delete" on public.materials for delete using (auth.uid() = uploader_id);
 
--- RLS: storage
-create policy "Herkes dosyaları indirebilir" on storage.objects for select using (bucket_id = 'materials');
-create policy "Giriş yapanlar dosya yükleyebilir" on storage.objects for insert with check (bucket_id = 'materials' and auth.uid() is not null);
-create policy "Yükleyen kendi dosyasını silebilir" on storage.objects for delete using (bucket_id = 'materials' and auth.uid() = owner);
+-- ---- RLS: material_files ----
+alter table public.material_files enable row level security;
+create policy "files_select" on public.material_files for select using (true);
+create policy "files_insert" on public.material_files for insert with check (
+  auth.uid() is not null and
+  exists (select 1 from public.materials m where m.id = material_id and m.uploader_id = auth.uid())
+);
+create policy "files_delete" on public.material_files for delete using (
+  exists (select 1 from public.materials m where m.id = material_id and m.uploader_id = auth.uid())
+);
 
--- Yeni kullanıcı kaydında otomatik profil oluştur
-create or replace function public.handle_new_user()
-returns trigger as $$
-begin
-  insert into public.profiles (id, email, display_name)
-  values (new.id, new.email, split_part(new.email, '@', 1));
-  return new;
-end;
-$$ language plpgsql security definer;
+-- ---- RLS: votes ----
+alter table public.votes enable row level security;
+create policy "votes_select" on public.votes for select using (true);
+create policy "votes_insert" on public.votes for insert with check (auth.uid() = user_id);
+create policy "votes_update" on public.votes for update using (auth.uid() = user_id);
+create policy "votes_delete" on public.votes for delete using (auth.uid() = user_id);
 
-create trigger on_auth_user_created
-  after insert on auth.users
-  for each row execute procedure public.handle_new_user();
+-- ---- İstatistikli görünüm (beğeni sayıları + dosya sayısı + paylaşan adı) ----
+create or replace view public.materials_with_stats as
+select
+  m.id, m.created_at, m.uploader_id, m.baslik, m.ders_kodu, m.donem, m.is_anonymous, m.aciklama,
+  case when m.is_anonymous then null else p.display_name end as uploader_name,
+  coalesce(sum(case when v.value = 1 then 1 else 0 end), 0)::int as likes,
+  coalesce(sum(case when v.value = -1 then 1 else 0 end), 0)::int as dislikes,
+  count(distinct f.id)::int as file_count
+from public.materials m
+left join public.profiles p on p.id = m.uploader_id
+left join public.votes v on v.material_id = m.id
+left join public.material_files f on f.material_id = m.id
+group by m.id, p.display_name;
+
+alter view public.materials_with_stats set (security_invoker = on);
+grant select on public.materials_with_stats to anon, authenticated;
