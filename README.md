@@ -11,9 +11,9 @@ yükleme, düzenleme ve beğeni için hesap gerekir.
 ## Sürüm Standardı
 
 Sürümler `vX.Y.Z` formatındadır:
-- **X (ana)** — devasa, baştan ezici değişiklikler
-- **Y (orta)** — orta çaplı yeni özellikler
-- **Z (yama)** — küçük bugfix veya görsel/UI güncellemeleri
+- **X** — Büyük güncellemeler, tüm sistemi etkileyen
+- **Y** — Orta boyutlu güncellemeler, yeni özellikler vb.
+- **Z** — Küçük boyutlu güncellemeler, bugfix veya UI vb.
 
 ---
 
