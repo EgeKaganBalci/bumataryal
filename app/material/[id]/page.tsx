@@ -63,6 +63,13 @@ export default function MaterialDetailPage() {
     router.push('/')
   }
 
+  const handleDownload = async (url: string) => {
+    // Önce sayacı artır (bekle), sonra dosyayı aç
+    setMaterial(m => m ? { ...m, indirme_sayisi: m.indirme_sayisi + 1 } : m)
+    try { await supabase.rpc('increment_download', { mat_id: id }) } catch {}
+    window.open(url, '_blank', 'noopener,noreferrer')
+  }
+
   if (loading) return <div className="flex items-center justify-center min-h-screen"><div className="w-6 h-6 border-2 border-gray-200 border-t-blue-500 rounded-full animate-spin" /></div>
   if (!material) return <div className="max-w-2xl mx-auto px-4 py-16 text-center text-gray-500">Not bulunamadı. <Link href="/" className="text-blue-600">Ana sayfaya dön</Link></div>
 
@@ -126,11 +133,10 @@ export default function MaterialDetailPage() {
               <FileText size={18} className="text-blue-600" />
             </div>
             <span className="flex-1 text-sm font-medium text-gray-800 truncate">{f.dosya_adi}</span>
-            <a href={f.dosya_url} target="_blank" rel="noopener noreferrer" download
-              onClick={() => { supabase.rpc('increment_download', { mat_id: id }); setMaterial(m => m ? { ...m, indirme_sayisi: m.indirme_sayisi + 1 } : m) }}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm text-white transition flex-shrink-0" style={{ background: 'var(--bu-navy)' }}>
+            <button onClick={() => handleDownload(f.dosya_url)}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm text-white transition flex-shrink-0 cursor-pointer" style={{ background: 'var(--bu-navy)' }}>
               <Download size={14} /> İndir
-            </a>
+            </button>
           </div>
         ))}
       </div>
