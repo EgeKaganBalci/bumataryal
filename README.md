@@ -19,6 +19,12 @@ Sürümler `vX.Y.Z` formatındadır:
 
 ## Değişiklik Geçmişi (Changelog)
 
+### v1.1.1 — İndirme takibi ve mobil görünüm
+- **İndirme sayısı:** Her notun kaç kez indirildiği sayılıp listede ve detay
+  sayfasında gösteriliyor.
+- **Mobil görünüm:** Telefonda liste artık yatay kaydırmalı tablo yerine
+  dikey kart düzeninde gösteriliyor (parmak dostu). Masaüstünde tablo korunuyor.
+
 ### v1.1.0 — Profil ve anonimlik geliştirmeleri
 - **Ders koduna tıklama:** Tablodaki ders koduna tıklayınca o ders otomatik filtrelenir.
 - **Profil sayfası:** Kullanıcı adına tıklayınca o kişinin paylaşımları listelenir.

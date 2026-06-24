@@ -14,6 +14,7 @@ export interface Material {
   ders_kodu: string
   donem: string | null
   aciklama: string | null
+  indirme_sayisi: number
   is_anonymous: boolean
   uploader_name: string | null
   likes: number

@@ -83,6 +83,7 @@ export default function MaterialDetailPage() {
               {material.donem && <span className="flex items-center gap-1.5"><Calendar size={14} /> {material.donem}</span>}
               <span className="flex items-center gap-1.5"><UserIcon size={14} /> {material.is_anonymous ? <span className="italic">Anonim</span> : material.uploader_id ? <Link href={`/u/${material.uploader_id}`} className="hover:text-blue-600 hover:underline transition">{material.uploader_name || '—'}</Link> : (material.uploader_name || '—')}</span>
               <span className="flex items-center gap-1.5"><Calendar size={14} /> {new Date(material.created_at).toLocaleDateString('tr-TR')}</span>
+              <span className="flex items-center gap-1.5"><Download size={14} /> {material.indirme_sayisi} indirme</span>
             </div>
           </div>
           {mine && (
@@ -126,6 +127,7 @@ export default function MaterialDetailPage() {
             </div>
             <span className="flex-1 text-sm font-medium text-gray-800 truncate">{f.dosya_adi}</span>
             <a href={f.dosya_url} target="_blank" rel="noopener noreferrer" download
+              onClick={() => { supabase.rpc('increment_download', { mat_id: id }); setMaterial(m => m ? { ...m, indirme_sayisi: m.indirme_sayisi + 1 } : m) }}
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm text-white transition flex-shrink-0" style={{ background: 'var(--bu-navy)' }}>
               <Download size={14} /> İndir
             </a>

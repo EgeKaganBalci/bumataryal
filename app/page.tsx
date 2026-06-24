@@ -2,7 +2,7 @@
 import { useEffect, useState, useCallback } from 'react'
 import { createClient } from '@/lib/supabase'
 import { Material, DONEMLER, PAGE_SIZE } from '@/lib/types'
-import { Search, ThumbsUp, ThumbsDown, FileText, Eye, Pencil, Trash2, ChevronLeft, ChevronRight, Upload } from 'lucide-react'
+import { Search, ThumbsUp, ThumbsDown, FileText, Eye, Pencil, Trash2, ChevronLeft, ChevronRight, Upload, Download } from 'lucide-react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import type { User } from '@supabase/supabase-js'
@@ -133,10 +133,10 @@ export default function HomePage() {
         </select>
       </div>
 
-      {/* Tablo */}
-      <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+      {/* MASAÜSTÜ: Tablo */}
+      <div className="hidden sm:block bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full text-sm min-w-[760px]">
+          <table className="w-full text-sm min-w-[820px]">
             <thead>
               <tr className="border-b border-gray-200 text-left text-xs text-gray-500 uppercase tracking-wide">
                 <th className="px-4 py-3 font-medium">Başlık</th>
@@ -144,17 +144,18 @@ export default function HomePage() {
                 <th className="px-4 py-3 font-medium">Dönem</th>
                 <th className="px-4 py-3 font-medium">Paylaşan</th>
                 <th className="px-4 py-3 font-medium">Tarih</th>
+                <th className="px-4 py-3 font-medium text-center">İndirme</th>
                 <th className="px-4 py-3 font-medium text-center">Beğeni</th>
                 <th className="px-4 py-3 font-medium text-right">İşlemler</th>
               </tr>
             </thead>
             <tbody>
               {loading ? (
-                <tr><td colSpan={7} className="px-4 py-16 text-center text-gray-400">
+                <tr><td colSpan={8} className="px-4 py-16 text-center text-gray-400">
                   <div className="inline-flex items-center gap-2"><div className="w-5 h-5 border-2 border-gray-200 border-t-blue-500 rounded-full animate-spin" />Yükleniyor...</div>
                 </td></tr>
               ) : materials.length === 0 ? (
-                <tr><td colSpan={7} className="px-4 py-16 text-center text-gray-400">
+                <tr><td colSpan={8} className="px-4 py-16 text-center text-gray-400">
                   <FileText size={36} className="mx-auto text-gray-300 mb-2" />
                   <p>Henüz not yok veya arama sonucu bulunamadı.</p>
                 </td></tr>
@@ -185,6 +186,11 @@ export default function HomePage() {
                       ) : (m.uploader_name || '—')}
                     </td>
                     <td className="px-4 py-3 text-gray-500 whitespace-nowrap">{new Date(m.created_at).toLocaleDateString('tr-TR')}</td>
+                    <td className="px-4 py-3">
+                      <div className="flex items-center justify-center gap-1 text-xs text-gray-500">
+                        <Download size={13} /> {m.indirme_sayisi}
+                      </div>
+                    </td>
                     <td className="px-4 py-3">
                       <div className="flex items-center justify-center gap-1">
                         <button onClick={() => handleVote(m, 1)} title="Beğen"
@@ -223,6 +229,76 @@ export default function HomePage() {
             </tbody>
           </table>
         </div>
+      </div>
+
+      {/* MOBİL: Kart listesi */}
+      <div className="sm:hidden space-y-3">
+        {loading ? (
+          <div className="flex items-center justify-center py-16 text-gray-400">
+            <div className="w-5 h-5 border-2 border-gray-200 border-t-blue-500 rounded-full animate-spin mr-2" />Yükleniyor...
+          </div>
+        ) : materials.length === 0 ? (
+          <div className="text-center py-16 text-gray-400 bg-white rounded-xl border border-gray-200">
+            <FileText size={36} className="mx-auto text-gray-300 mb-2" />
+            <p>Henüz not yok veya sonuç bulunamadı.</p>
+          </div>
+        ) : materials.map(m => {
+          const mine = user && user.id === m.uploader_id
+          const myVote = myVotes[m.id]
+          return (
+            <div key={m.id} className="bg-white rounded-xl border border-gray-200 shadow-sm p-4">
+              <Link href={`/material/${m.id}`} className="block font-semibold text-gray-900 leading-snug mb-2">
+                {m.baslik}
+                {m.file_count > 1 && <span className="ml-1.5 text-xs font-normal text-gray-400">({m.file_count} dosya)</span>}
+              </Link>
+
+              <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-gray-500 mb-3">
+                <button onClick={() => { setDersKodu(m.ders_kodu); window.scrollTo({ top: 0, behavior: 'smooth' }) }}
+                  className="font-mono font-semibold text-gray-700 bg-gray-100 px-1.5 py-0.5 rounded">
+                  {m.ders_kodu}
+                </button>
+                {m.donem && <><span>·</span><span>{m.donem}</span></>}
+                <span>·</span>
+                <span>{new Date(m.created_at).toLocaleDateString('tr-TR')}</span>
+              </div>
+
+              <div className="flex items-center justify-between gap-2">
+                <div className="flex items-center gap-1.5 text-xs text-gray-500 min-w-0">
+                  {m.is_anonymous ? (
+                    <span className="italic truncate">Anonim</span>
+                  ) : m.uploader_id ? (
+                    <Link href={`/u/${m.uploader_id}`} className="truncate hover:text-blue-600">{m.uploader_name || '—'}</Link>
+                  ) : <span className="truncate">{m.uploader_name || '—'}</span>}
+                </div>
+                <div className="flex items-center gap-1 flex-shrink-0">
+                  <button onClick={() => handleVote(m, 1)}
+                    className={`flex items-center gap-0.5 px-1.5 py-1 rounded-md text-xs ${myVote === 1 ? 'bg-green-100 text-green-700' : 'text-gray-500 bg-gray-50'}`}>
+                    <ThumbsUp size={12} /> {m.likes}
+                  </button>
+                  <button onClick={() => handleVote(m, -1)}
+                    className={`flex items-center gap-0.5 px-1.5 py-1 rounded-md text-xs ${myVote === -1 ? 'bg-red-100 text-red-700' : 'text-gray-500 bg-gray-50'}`}>
+                    <ThumbsDown size={12} /> {m.dislikes}
+                  </button>
+                  <span className="flex items-center gap-0.5 px-1.5 py-1 rounded-md text-xs text-gray-500 bg-gray-50">
+                    <Download size={12} /> {m.indirme_sayisi}
+                  </span>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2 mt-3 pt-3 border-t border-gray-100">
+                <Link href={`/material/${m.id}`} className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg text-sm text-white" style={{ background: 'var(--bu-navy)' }}>
+                  <Eye size={14} /> Detaylar
+                </Link>
+                {mine && (
+                  <>
+                    <Link href={`/material/${m.id}/edit`} className="p-2 rounded-lg border border-gray-200 text-gray-500"><Pencil size={15} /></Link>
+                    <button onClick={() => handleDelete(m)} className="p-2 rounded-lg border border-gray-200 text-red-500"><Trash2 size={15} /></button>
+                  </>
+                )}
+              </div>
+            </div>
+          )
+        })}
       </div>
 
       {/* Pagination */}
