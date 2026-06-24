@@ -6,6 +6,7 @@ import { createClient } from '@/lib/supabase'
 import type { User } from '@supabase/supabase-js'
 import { LogIn, LogOut, BookOpen, User as UserIcon, Settings } from 'lucide-react'
 import { useRouter } from 'next/navigation'
+import { Analytics } from '@vercel/analytics/next'
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
@@ -87,6 +88,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <footer className="border-t border-gray-200 mt-16 py-8 text-center text-sm text-gray-400">
           BÜ Materyal — Başkent Üniversitesi öğrencileri tarafından, öğrenciler için
         </footer>
+        <Analytics />
       </body>
     </html>
   )
