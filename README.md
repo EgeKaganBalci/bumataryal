@@ -19,6 +19,11 @@ Sürümler `vX.Y.Z` formatındadır:
 
 ## Değişiklik Geçmişi (Changelog)
 
+### v1.1.2 — İndirme sayacı düzeltmesi
+- İndirme butonuna basıldığında sayaç bazen veritabanına yazılmadan sayfa
+  yenilenince sıfırlanıyordu. Buton artık önce sayacı kaydedip sonra dosyayı
+  açıyor; indirme sayısı kalıcı oluyor.
+
 ### v1.1.1 — İndirme takibi ve mobil görünüm
 - **İndirme sayısı:** Her notun kaç kez indirildiği sayılıp listede ve detay
   sayfasında gösteriliyor.
