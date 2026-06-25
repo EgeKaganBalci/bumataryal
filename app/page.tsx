@@ -72,7 +72,7 @@ export default function HomePage() {
     if (!user) { router.push('/auth'); return }
     const current = myVotes[m.id]
 
-    // Önce oy durumunu güncelle
+    // Oy durumunu hemen güncelle (UI responsive kalsın)
     setMyVotes(prev => {
       const n = { ...prev }
       if (current === value) delete n[m.id]
@@ -80,11 +80,10 @@ export default function HomePage() {
       return n
     })
 
-    // Veritabanına yaz
-    if (current === value) {
-      await supabase.from('votes').delete().eq('material_id', m.id).eq('user_id', user.id)
-    } else {
-      await supabase.from('votes').upsert({ material_id: m.id, user_id: user.id, value })
+    // Önce mevcut oyu sil, sonra gerekiyorsa yenisini ekle
+    await supabase.from('votes').delete().eq('material_id', m.id).eq('user_id', user.id)
+    if (current !== value) {
+      await supabase.from('votes').insert({ material_id: m.id, user_id: user.id, value })
     }
 
     // Gerçek sayıyı veritabanından çek

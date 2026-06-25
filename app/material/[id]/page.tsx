@@ -44,10 +44,10 @@ export default function MaterialDetailPage() {
 
     setMyVote(current === value ? undefined : value)
 
-    if (current === value) {
-      await supabase.from('votes').delete().eq('material_id', id).eq('user_id', user.id)
-    } else {
-      await supabase.from('votes').upsert({ material_id: id, user_id: user.id, value })
+    // Önce mevcut oyu sil, sonra gerekiyorsa yenisini ekle
+    await supabase.from('votes').delete().eq('material_id', id).eq('user_id', user.id)
+    if (current !== value) {
+      await supabase.from('votes').insert({ material_id: id, user_id: user.id, value })
     }
 
     // Gerçek sayıyı veritabanından çek
