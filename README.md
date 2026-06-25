@@ -1,10 +1,8 @@
 # BÜ Materyal — Başkent Üniversitesi Not Paylaşım Platformu
 
 Başkent Üniversitesi öğrencilerinin ders notlarını, föyleri, sınav ve ödevleri
-paylaşıp indirebildiği web platformu. Notları herkes görüntüleyip indirebilir;
+paylaşıp indirebildiği web platformu. Notları herkes görüntüleyip indirebilir ancak
 yükleme, düzenleme ve beğeni için hesap gerekir.
-
-**Teknolojiler:** Next.js (App Router) · Supabase (Auth + DB + Storage) · Vercel
 
 ---
 
@@ -20,12 +18,11 @@ Sürümler `vX.Y.Z` formatındadır:
 ## Değişiklik Geçmişi (Changelog)
 
 ### v1.2.2 — Düzenleme sayfasına Drive linki desteği
-- Düzenleme sayfasında mevcut Drive linkleri artık görünür; link URL'si
-  ve adı düzenlenebilir, silinebilir.
-- Yeni Drive linki de düzenleme sayfasından eklenebilir.
-- Yeni eklenen Drive linkleri "Yeni" etiketiyle listelenir, kaydedilmeden
-  geri alınabilir.
-
+- Düzenleme sayfasında mevcut Drive linkleri artık görünüyor ve link URL'si
+  ve adı düzenlenebilir, silinebilir hale getirildi.
+- Artık Düzenleme sayfasından yeni linkler eklenebiliyor. Eklenen linkler yeni olarak
+  etiketlenecek ve istenirse kaydetmeden önce geri alınabilecektir.
+  
 ### v1.2.1 — Google Drive linki ekleme
 - Yükleme formuna "Drive linki ekle" seçeneği eklendi. Dosya yüklemeyle
   birlikte veya tek başına Drive linki eklenebilir.
@@ -46,17 +43,15 @@ Sürümler `vX.Y.Z` formatındadır:
 - Admin ve kurucu anonim notların sahibini görebilir.
 - Ban/unban sistemi: ban sebebi yazılarak kullanıcı askıya alınır.
 - Banlı kullanıcı giriş yapmaya çalışınca "Hesabınız askıya alınmıştır.
-  Sebep: ..." mesajı çıkar.
+  Sebep: ... mesajı çıkar.
 - Oturum açıkken banlanan kullanıcının oturumu otomatik kapatılır.
 - Loglar: ban, unban, rol değişikliği ve not silme olayları kayıt altına alınır.
 
 ### v1.1.4 — Beğeni sayacı düzeltmesi
-- Beğeni/beğenmeme butonuna basılınca sayı yanlış görünüyor, F5 ile
-  yenilenince farklı bir sayı çıkıyordu. İki ayrı sorun tespit edildi:
-  oy işlemi artık önce mevcut oyu silip sonra yenisini ekliyor (tekrar
-  kayıt oluşması engellendi); ayrıca veritabanı görünümünde oylar ve
-  dosya sayısı aynı grupta hesaplandığı için birbirini çarpıyordu,
-  ikisi ayrı subquery'e alındı. F5 gerekmeden her zaman doğru görünüyor.
+- Öncede beğeni/beğenmeme butonuna basılınca sayı yanlış görünüyordu, F5 ile
+  yenilenince farklı bir sayı çıkıyordu. Oy işlemi artık önce mevcut oyu silip sonra yenisini
+  ekliyor. Ayrıca veritabanı görünümünde oylar ve dosya sayısı aynı grupta hesaplandığı
+  için birbirini çarpıyordu, ikisi ayrı subquery'e alındı. F5 gerekmeden her zaman doğru görünüyor.
 
 ### v1.1.3 — Dosya tipi ikonları ve filtre temizleme
 - **Dosya tipi ikonları:** Detay sayfasında her dosyanın türü (PDF, DOC, PPT)
@@ -74,7 +69,7 @@ Sürümler `vX.Y.Z` formatındadır:
 - **İndirme sayısı:** Her notun kaç kez indirildiği sayılıp listede ve detay
   sayfasında gösteriliyor.
 - **Mobil görünüm:** Telefonda liste artık yatay kaydırmalı tablo yerine
-  dikey kart düzeninde gösteriliyor (parmak dostu). Masaüstünde tablo korunuyor.
+  dikey kart olarak gösteriliyor. Masaüstünde tablo görünümü aynen bırakıldı.
 
 ### v1.1.0 — Profil ve anonimlik geliştirmeleri
 - **Ders koduna tıklama:** Tablodaki ders koduna tıklayınca o ders otomatik filtrelenir.
@@ -82,8 +77,8 @@ Sürümler `vX.Y.Z` formatındadır:
   - Kişi kendi profilinde tüm yüklemelerini görür (anonim olanlar rozetle işaretli).
   - Başkaları sadece anonim olmayan paylaşımları görür; anonimlik veritabanı
     seviyesinde korunur (anonim notların sahibi başkalarına gönderilmez).
-- **Hesap ayarları:** Navbar'a ayar (çark) butonu eklendi. Kullanıcı adı ve şifre
-  buradan değiştirilebilir.
+- **Hesap ayarları:** Navbar'a ayar butonu eklendi. Kullanıcı adı ve şifre
+  buradan değiştirilebilir hale getirildi.
 - **Navbar:** Kullanıcı adı artık profile bağlanıyor.
 
 ### v1.0.0 — İlk sürüm
