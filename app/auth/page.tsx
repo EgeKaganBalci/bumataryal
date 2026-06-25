@@ -22,10 +22,27 @@ export default function AuthPage() {
     if (mode === 'register') {
       const { error: e } = await supabase.auth.signUp({ email, password })
       if (e) { setError(e.message); setLoading(false); return }
-      setSuccess('Kayıt başarılı! E-postanı doğrula ve giriş yap.')
+      setSuccess('Kayıt başarılı! Giriş yapabilirsin.')
     } else {
-      const { error: e } = await supabase.auth.signInWithPassword({ email, password })
+      const { error: e, data } = await supabase.auth.signInWithPassword({ email, password })
       if (e) { setError('E-posta veya şifre hatalı'); setLoading(false); return }
+
+      // Ban kontrolü
+      if (data.user) {
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('is_banned, ban_reason')
+          .eq('id', data.user.id)
+          .single()
+
+        if (profile?.is_banned) {
+          await supabase.auth.signOut()
+          setError(`Hesabınız askıya alınmıştır.${profile.ban_reason ? `\nSebep: ${profile.ban_reason}` : ''}`)
+          setLoading(false)
+          return
+        }
+      }
+
       router.push('/')
       router.refresh()
     }
@@ -45,10 +62,12 @@ export default function AuthPage() {
 
         <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
           <div className="flex rounded-lg border border-gray-200 p-1 mb-5">
-            <button onClick={() => { setMode('login'); setError(''); setSuccess('') }} className={`flex-1 py-1.5 text-sm rounded-md transition font-medium ${mode === 'login' ? 'bg-gray-900 text-white' : 'text-gray-500 hover:text-gray-700'}`}>
+            <button onClick={() => { setMode('login'); setError(''); setSuccess('') }}
+              className={`flex-1 py-1.5 text-sm rounded-md transition font-medium ${mode === 'login' ? 'bg-gray-900 text-white' : 'text-gray-500 hover:text-gray-700'}`}>
               Giriş Yap
             </button>
-            <button onClick={() => { setMode('register'); setError(''); setSuccess('') }} className={`flex-1 py-1.5 text-sm rounded-md transition font-medium ${mode === 'register' ? 'bg-gray-900 text-white' : 'text-gray-500 hover:text-gray-700'}`}>
+            <button onClick={() => { setMode('register'); setError(''); setSuccess('') }}
+              className={`flex-1 py-1.5 text-sm rounded-md transition font-medium ${mode === 'register' ? 'bg-gray-900 text-white' : 'text-gray-500 hover:text-gray-700'}`}>
               Kayıt Ol
             </button>
           </div>
@@ -68,13 +87,11 @@ export default function AuthPage() {
           </div>
 
           {error && (
-            <div className="flex items-center gap-2 mt-3 p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-700">
-              <AlertCircle size={14} className="flex-shrink-0" /> {error}
+            <div className="flex items-start gap-2 mt-3 p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-700 whitespace-pre-line">
+              <AlertCircle size={14} className="flex-shrink-0 mt-0.5" /> {error}
             </div>
           )}
-          {success && (
-            <div className="mt-3 p-3 bg-green-50 border border-green-200 rounded-lg text-sm text-green-700">{success}</div>
-          )}
+          {success && <div className="mt-3 p-3 bg-green-50 border border-green-200 rounded-lg text-sm text-green-700">{success}</div>}
 
           <button onClick={handleSubmit} disabled={loading}
             className="w-full mt-4 py-2.5 text-sm font-semibold text-white rounded-lg transition disabled:opacity-60"

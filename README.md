@@ -56,7 +56,7 @@ Sürümler `vX.Y.Z` formatındadır:
 - **Navbar:** Kullanıcı adı artık profile bağlanıyor.
 
 ### v1.0.0 — İlk sürüm
-- Tablo görünümü: Başlık · Ders Kodu · Dönem · Paylaşan · Tarih · Beğeni · İşlemler
+- Tablo görünümü: Başlık · Ders Kodu · Dönem · Paylaşan · Tarih · İndirme · Beğeni · İşlemler
 - Çoklu dosya yükleme (PDF, DOC, DOCX, PPTX) — tek paylaşımda birden fazla dosya
 - Açıklama alanı (1000 karakter), detay sayfasında görünür
 - Beğeni / beğenmeme (kayıtlı kullanıcılar, kişi başı tek oy, herkese açık sayı)

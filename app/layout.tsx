@@ -4,20 +4,31 @@ import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase'
 import type { User } from '@supabase/supabase-js'
-import { LogIn, LogOut, BookOpen, User as UserIcon, Settings } from 'lucide-react'
-import { useRouter } from 'next/navigation'
+import { LogIn, LogOut, BookOpen, User as UserIcon, Settings, Shield } from 'lucide-react'
+import { useRouter, usePathname } from 'next/navigation'
+import type { UserRole } from '@/lib/types'
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
   const [displayName, setDisplayName] = useState<string>('')
+  const [role, setRole] = useState<UserRole>('member')
   const [loading, setLoading] = useState(true)
   const supabase = createClient()
   const router = useRouter()
+  const pathname = usePathname()
 
   const loadProfile = async (u: User | null) => {
-    if (!u) { setDisplayName(''); return }
-    const { data } = await supabase.from('profiles').select('display_name').eq('id', u.id).single()
+    if (!u) { setDisplayName(''); setRole('member'); return }
+    const { data } = await supabase.from('profiles').select('display_name, role, is_banned, ban_reason').eq('id', u.id).single()
+
+    // Ban kontrolü — oturum açıkken banlandıysa çıkar
+    if (data?.is_banned) {
+      await supabase.auth.signOut()
+      router.push('/auth')
+      return
+    }
     setDisplayName(data?.display_name || u.email?.split('@')[0] || 'Hesabım')
+    setRole(data?.role || 'member')
   }
 
   useEffect(() => {
@@ -39,6 +50,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     router.refresh()
   }
 
+  const isAdmin = role === 'founder' || role === 'admin'
+
   return (
     <html lang="tr">
       <body>
@@ -58,10 +71,21 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 <>
                   {user ? (
                     <>
+                      {isAdmin && (
+                        <Link href="/admin" title="Yönetim Paneli"
+                          className={`flex items-center p-1.5 rounded-lg transition ${pathname.startsWith('/admin') ? 'bg-white/25 text-white' : 'text-white/70 hover:text-white hover:bg-white/10'}`}>
+                          <Shield size={15} />
+                        </Link>
+                      )}
                       <Link href={`/u/${user.id}`} title="Profilim"
                         className="flex items-center gap-1.5 text-white/80 hover:text-white text-sm px-2.5 py-1.5 rounded-lg hover:bg-white/10 transition">
                         <UserIcon size={14} />
                         <span className="hidden sm:inline text-xs font-medium">{displayName}</span>
+                        {role !== 'member' && (
+                          <span className="hidden sm:inline text-[10px] bg-white/20 px-1.5 py-0.5 rounded text-white/90">
+                            {role === 'founder' ? 'Kurucu' : 'Admin'}
+                          </span>
+                        )}
                       </Link>
                       <Link href="/settings" title="Ayarlar"
                         className="flex items-center text-white/70 hover:text-white p-1.5 rounded-lg hover:bg-white/10 transition">
