@@ -19,6 +19,13 @@ Sürümler `vX.Y.Z` formatındadır:
 
 ## Değişiklik Geçmişi (Changelog)
 
+### v1.2.2 — Düzenleme sayfasına Drive linki desteği
+- Düzenleme sayfasında mevcut Drive linkleri artık görünür; link URL'si
+  ve adı düzenlenebilir, silinebilir.
+- Yeni Drive linki de düzenleme sayfasından eklenebilir.
+- Yeni eklenen Drive linkleri "Yeni" etiketiyle listelenir, kaydedilmeden
+  geri alınabilir.
+
 ### v1.2.1 — Google Drive linki ekleme
 - Yükleme formuna "Drive linki ekle" seçeneği eklendi. Dosya yüklemeyle
   birlikte veya tek başına Drive linki eklenebilir.
