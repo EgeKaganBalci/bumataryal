@@ -19,6 +19,18 @@ Sürümler `vX.Y.Z` formatındadır:
 
 ## Değişiklik Geçmişi (Changelog)
 
+### v1.2.0 — Rol sistemi ve yönetim paneli
+- Kurucu, admin ve üye rolleri eklendi.
+- Navbar'da admin/kurucuya özel kalkan ikonu eklendi, tıklayınca yönetim paneli açılır.
+- Yönetim paneli 5 sekme: Genel Bakış (istatistikler), Kullanıcılar, Banlılar, Notlar, Loglar.
+- Kurucu istediği kullanıcıya admin yetkisi verip geri alabilir.
+- Admin ve kurucu herhangi bir notu düzenleyip silebilir.
+- Admin ve kurucu anonim notların sahibini görebilir.
+- Ban/unban sistemi: ban sebebi yazılarak kullanıcı askıya alınır.
+- Banlı kullanıcı giriş yapmaya çalışınca "Hesabınız askıya alınmıştır. Sebep: ..." mesajı çıkar.
+- Oturum açıkken banlanan kullanıcının oturumu otomatik kapatılır.
+- Loglar: ban, unban, rol değişikliği ve not silme olayları kayıt altına alınır.
+
 ### v1.1.4 — Beğeni sayacı düzeltmesi
 - Beğeni/beğenmeme butonuna basılınca sayı yanlış görünüyor, F5 ile
   yenilenince farklı bir sayı çıkıyordu. İki ayrı sorun tespit edildi:
