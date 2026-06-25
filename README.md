@@ -102,6 +102,8 @@ GitHub'a push → Vercel otomatik deploy eder.
 Her sürümün getirdiği veritabanı değişikliği varsa, ilgili SQL dosyası pakette bulunur:
 - `supabase-add-aciklama.sql` — açıklama alanı (v1.0.0 sonrası eklendi)
 - `supabase-v1.1.0.sql` — profil/anonimlik için görünüm güncellemesi
+- `supabase-v1.1.1.sql` — indirme sayacı ve fonksiyon
+- `supabase-v1.2.0.sql` — rol sistemi, ban, loglar, admin paneli
 
 Kodu güncellemek için:
 ```bash
