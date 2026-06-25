@@ -21,8 +21,11 @@ Sürümler `vX.Y.Z` formatındadır:
 
 ### v1.1.4 — Beğeni sayacı düzeltmesi
 - Beğeni/beğenmeme butonuna basılınca sayı yanlış görünüyor, F5 ile
-  yenilenince farklı bir sayı çıkıyordu. Artık oy yazıldıktan sonra
-  gerçek sayı veritabanından çekiliyor; F5 gerekmeden doğru görünüyor.
+  yenilenince farklı bir sayı çıkıyordu. İki ayrı sorun tespit edildi:
+  oy işlemi artık önce mevcut oyu silip sonra yenisini ekliyor (tekrar
+  kayıt oluşması engellendi); ayrıca veritabanı görünümünde oylar ve
+  dosya sayısı aynı grupta hesaplandığı için birbirini çarpıyordu,
+  ikisi ayrı subquery'e alındı. F5 gerekmeden her zaman doğru görünüyor.
 
 ### v1.1.3 — Dosya tipi ikonları ve filtre temizleme
 - **Dosya tipi ikonları:** Detay sayfasında her dosyanın türü (PDF, DOC, PPT)
