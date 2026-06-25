@@ -133,18 +133,41 @@ export default function MaterialDetailPage() {
       <h2 className="text-sm font-semibold text-gray-600 mb-3">Dosyalar ({filesList.length})</h2>
       <div className="space-y-2">
         {filesList.map(f => {
+          const isDrive = f.dosya_url.includes('drive.google.com') || f.dosya_url.includes('docs.google.com')
           const ft = fileTypeStyle(f.dosya_adi)
           return (
           <div key={f.id} className="flex items-center gap-3 bg-white rounded-xl border border-gray-200 p-4 hover:border-gray-300 transition">
-            <div className={`w-11 h-11 rounded-lg flex flex-col items-center justify-center flex-shrink-0 ${ft.bg}`}>
-              <FileText size={16} className={ft.text} />
-              <span className={`text-[8px] font-bold leading-none mt-0.5 ${ft.text}`}>{ft.label}</span>
+            <div className={`w-11 h-11 rounded-lg flex flex-col items-center justify-center flex-shrink-0 ${isDrive ? 'bg-blue-50' : ft.bg}`}>
+              {isDrive ? (
+                <svg viewBox="0 0 24 24" className="w-5 h-5" fill="none">
+                  <path d="M6 20L2 13l4-7h8l4 7-4 7H6z" fill="#4285F4" opacity=".3"/>
+                  <path d="M14 6l4 7-4 7" stroke="#4285F4" strokeWidth="1.5" fill="none"/>
+                  <path d="M2 13h12" stroke="#34A853" strokeWidth="1.5"/>
+                  <path d="M6 6l6 10.5" stroke="#FBBC05" strokeWidth="1.5"/>
+                </svg>
+              ) : (
+                <>
+                  <FileText size={16} className={ft.text} />
+                  <span className={`text-[8px] font-bold leading-none mt-0.5 ${ft.text}`}>{ft.label}</span>
+                </>
+              )}
             </div>
-            <span className="flex-1 text-sm font-medium text-gray-800 truncate">{f.dosya_adi}</span>
-            <button onClick={() => handleDownload(f.dosya_url)}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm text-white transition flex-shrink-0 cursor-pointer" style={{ background: 'var(--bu-navy)' }}>
-              <Download size={14} /> İndir
-            </button>
+            <div className="flex-1 min-w-0">
+              <span className="text-sm font-medium text-gray-800 truncate block">{f.dosya_adi}</span>
+              {isDrive && <span className="text-xs text-blue-500">Google Drive</span>}
+            </div>
+            {isDrive ? (
+              <a href={f.dosya_url} target="_blank" rel="noopener noreferrer"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm text-white transition flex-shrink-0" style={{ background: 'var(--bu-navy)' }}>
+                <svg viewBox="0 0 24 24" className="w-3.5 h-3.5 fill-white"><path d="M19 19H5V5h7V3H5a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>
+                Aç
+              </a>
+            ) : (
+              <button onClick={() => handleDownload(f.dosya_url)}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm text-white transition flex-shrink-0 cursor-pointer" style={{ background: 'var(--bu-navy)' }}>
+                <Download size={14} /> İndir
+              </button>
+            )}
           </div>
           )
         })}
