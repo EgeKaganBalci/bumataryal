@@ -19,6 +19,13 @@ Sürümler `vX.Y.Z` formatındadır:
 
 ## Değişiklik Geçmişi (Changelog)
 
+### v1.1.3 — Dosya tipi ikonları ve filtre temizleme
+- **Dosya tipi ikonları:** Detay sayfasında her dosyanın türü (PDF, DOC, PPT)
+  renkli ikon ve etiketle gösteriliyor. PDF kırmızı, Word mavi, PowerPoint turuncu.
+- **Filtre temizleme:** Arama kutularının içine X butonu eklendi (tıklayınca o
+  filtreyi temizler). Aktif filtreler mavi etiket olarak listenin üstünde görünür
+  ve tek tıkla kaldırılabilir. "Tümünü temizle" bağlantısı da var.
+
 ### v1.1.2 — İndirme sayacı düzeltmesi
 - İndirme butonuna basıldığında sayaç bazen veritabanına yazılmadan sayfa
   yenilenince sıfırlanıyordu. Buton artık önce sayacı kaydedip sonra dosyayı

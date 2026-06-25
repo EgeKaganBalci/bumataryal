@@ -1,7 +1,7 @@
 'use client'
 import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase'
-import { DONEMLER, normalizeDersKodu, ALLOWED_EXT, ALLOWED_ACCEPT } from '@/lib/types'
+import { DONEMLER, normalizeDersKodu, ALLOWED_EXT, ALLOWED_ACCEPT, fileTypeStyle } from '@/lib/types'
 import { useRouter } from 'next/navigation'
 import { Upload, CheckCircle, AlertCircle, FileText, X, Plus } from 'lucide-react'
 import type { User } from '@supabase/supabase-js'
@@ -153,14 +153,17 @@ export default function UploadPage() {
 
           {files.length > 0 && (
             <div className="mt-3 space-y-2">
-              {files.map((f, i) => (
+              {files.map((f, i) => {
+                const ft = fileTypeStyle(f.name)
+                return (
                 <div key={i} className="flex items-center gap-2 px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg">
-                  <FileText size={16} className="text-gray-400 flex-shrink-0" />
+                  <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded ${ft.bg} ${ft.text}`}>{ft.label}</span>
                   <span className="text-sm text-gray-700 flex-1 truncate">{f.name}</span>
                   <span className="text-xs text-gray-400">{(f.size / 1024 / 1024).toFixed(1)} MB</span>
                   <button onClick={() => removeFile(i)} className="text-gray-400 hover:text-red-500 transition"><X size={15} /></button>
                 </div>
-              ))}
+                )
+              })}
               <p className="text-xs text-gray-400">{files.length} dosya seçildi</p>
             </div>
           )}

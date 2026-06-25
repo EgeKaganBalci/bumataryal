@@ -2,7 +2,7 @@
 import { useEffect, useState, useCallback } from 'react'
 import { createClient } from '@/lib/supabase'
 import { Material, DONEMLER, PAGE_SIZE } from '@/lib/types'
-import { Search, ThumbsUp, ThumbsDown, FileText, Eye, Pencil, Trash2, ChevronLeft, ChevronRight, Upload, Download } from 'lucide-react'
+import { Search, ThumbsUp, ThumbsDown, FileText, Eye, Pencil, Trash2, ChevronLeft, ChevronRight, Upload, Download, X } from 'lucide-react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import type { User } from '@supabase/supabase-js'
@@ -119,19 +119,34 @@ export default function HomePage() {
         <div className="relative">
           <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
           <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Başlıkta ara..."
-            className="w-full pl-9 pr-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400" />
+            className="w-full pl-9 pr-8 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400" />
+          {search && <button onClick={() => setSearch('')} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"><X size={14} /></button>}
         </div>
         <div className="relative">
           <FileText size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
           <input value={dersKodu} onChange={e => setDersKodu(e.target.value)} placeholder="Ders kodu (örn. EEM301)"
-            className="w-full pl-9 pr-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400 font-mono uppercase" />
+            className="w-full pl-9 pr-8 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400 font-mono uppercase" />
+          {dersKodu && <button onClick={() => setDersKodu('')} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"><X size={14} /></button>}
         </div>
-        <select value={donem} onChange={e => setDonem(e.target.value)}
-          className="text-sm border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500/20">
-          <option value="">Tüm dönemler</option>
-          {DONEMLER.map(d => <option key={d}>{d}</option>)}
-        </select>
+        <div className="relative">
+          <select value={donem} onChange={e => setDonem(e.target.value)}
+            className="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500/20 appearance-none">
+            <option value="">Tüm dönemler</option>
+            {DONEMLER.map(d => <option key={d}>{d}</option>)}
+          </select>
+          {donem && <button onClick={() => setDonem('')} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"><X size={14} /></button>}
+        </div>
       </div>
+
+      {/* Aktif filtreler varsa "Tümünü temizle" */}
+      {(search || dersKodu || donem) && (
+        <div className="flex items-center gap-2 mb-4 flex-wrap">
+          {search && <span className="inline-flex items-center gap-1.5 text-xs bg-blue-50 text-blue-700 border border-blue-200 px-2.5 py-1 rounded-full">Başlık: "{search}" <button onClick={() => setSearch('')}><X size={11} /></button></span>}
+          {dersKodu && <span className="inline-flex items-center gap-1.5 text-xs bg-blue-50 text-blue-700 border border-blue-200 px-2.5 py-1 rounded-full font-mono">Ders: {dersKodu} <button onClick={() => setDersKodu('')}><X size={11} /></button></span>}
+          {donem && <span className="inline-flex items-center gap-1.5 text-xs bg-blue-50 text-blue-700 border border-blue-200 px-2.5 py-1 rounded-full">Dönem: {donem} <button onClick={() => setDonem('')}><X size={11} /></button></span>}
+          <button onClick={() => { setSearch(''); setDersKodu(''); setDonem('') }} className="text-xs text-gray-500 hover:text-gray-700 underline ml-1">Tümünü temizle</button>
+        </div>
+      )}
 
       {/* MASAÜSTÜ: Tablo */}
       <div className="hidden sm:block bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">

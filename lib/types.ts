@@ -43,3 +43,16 @@ export const PAGE_SIZE = 20
 // İzin verilen dosya uzantıları
 export const ALLOWED_EXT = ['pdf', 'doc', 'docx', 'pptx']
 export const ALLOWED_ACCEPT = '.pdf,.doc,.docx,.pptx'
+
+// Dosya türüne göre etiket + renk (uzantıdan)
+export function fileTypeStyle(filename: string): { label: string; bg: string; text: string } {
+  const ext = (filename.split('.').pop() || '').toLowerCase()
+  switch (ext) {
+    case 'pdf': return { label: 'PDF', bg: 'bg-red-50', text: 'text-red-600' }
+    case 'doc':
+    case 'docx': return { label: 'DOC', bg: 'bg-blue-50', text: 'text-blue-600' }
+    case 'ppt':
+    case 'pptx': return { label: 'PPT', bg: 'bg-orange-50', text: 'text-orange-600' }
+    default: return { label: (ext || 'dosya').toUpperCase(), bg: 'bg-gray-100', text: 'text-gray-600' }
+  }
+}

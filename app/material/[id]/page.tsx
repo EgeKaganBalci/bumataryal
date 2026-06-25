@@ -1,7 +1,7 @@
 'use client'
 import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase'
-import { Material, MaterialFile } from '@/lib/types'
+import { Material, MaterialFile, fileTypeStyle } from '@/lib/types'
 import { useParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { Download, FileText, ThumbsUp, ThumbsDown, ArrowLeft, Pencil, Trash2, Calendar, User as UserIcon, Hash } from 'lucide-react'
@@ -127,10 +127,13 @@ export default function MaterialDetailPage() {
       {/* Dosyalar */}
       <h2 className="text-sm font-semibold text-gray-600 mb-3">Dosyalar ({filesList.length})</h2>
       <div className="space-y-2">
-        {filesList.map(f => (
+        {filesList.map(f => {
+          const ft = fileTypeStyle(f.dosya_adi)
+          return (
           <div key={f.id} className="flex items-center gap-3 bg-white rounded-xl border border-gray-200 p-4 hover:border-gray-300 transition">
-            <div className="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center flex-shrink-0">
-              <FileText size={18} className="text-blue-600" />
+            <div className={`w-11 h-11 rounded-lg flex flex-col items-center justify-center flex-shrink-0 ${ft.bg}`}>
+              <FileText size={16} className={ft.text} />
+              <span className={`text-[8px] font-bold leading-none mt-0.5 ${ft.text}`}>{ft.label}</span>
             </div>
             <span className="flex-1 text-sm font-medium text-gray-800 truncate">{f.dosya_adi}</span>
             <button onClick={() => handleDownload(f.dosya_url)}
@@ -138,7 +141,8 @@ export default function MaterialDetailPage() {
               <Download size={14} /> İndir
             </button>
           </div>
-        ))}
+          )
+        })}
       </div>
     </div>
   )
