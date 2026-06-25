@@ -41,18 +41,23 @@ export default function MaterialDetailPage() {
     if (!user) { router.push('/auth'); return }
     if (!material) return
     const current = myVote
-    setMaterial(m => {
-      if (!m) return m
-      let likes = m.likes, dislikes = m.dislikes
-      if (current === 1) likes--; if (current === -1) dislikes--
-      if (current !== value) { if (value === 1) likes++; else dislikes++ }
-      return { ...m, likes, dislikes }
-    })
+
     setMyVote(current === value ? undefined : value)
+
     if (current === value) {
       await supabase.from('votes').delete().eq('material_id', id).eq('user_id', user.id)
     } else {
       await supabase.from('votes').upsert({ material_id: id, user_id: user.id, value })
+    }
+
+    // Gerçek sayıyı veritabanından çek
+    const { data } = await supabase
+      .from('materials_with_stats')
+      .select('likes, dislikes')
+      .eq('id', id)
+      .single()
+    if (data) {
+      setMaterial(m => m ? { ...m, likes: data.likes, dislikes: data.dislikes } : m)
     }
   }
 

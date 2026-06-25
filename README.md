@@ -19,6 +19,11 @@ Sürümler `vX.Y.Z` formatındadır:
 
 ## Değişiklik Geçmişi (Changelog)
 
+### v1.1.4 — Beğeni sayacı düzeltmesi
+- Beğeni/beğenmeme butonuna basılınca sayı yanlış görünüyor, F5 ile
+  yenilenince farklı bir sayı çıkıyordu. Artık oy yazıldıktan sonra
+  gerçek sayı veritabanından çekiliyor; F5 gerekmeden doğru görünüyor.
+
 ### v1.1.3 — Dosya tipi ikonları ve filtre temizleme
 - **Dosya tipi ikonları:** Detay sayfasında her dosyanın türü (PDF, DOC, PPT)
   renkli ikon ve etiketle gösteriliyor. PDF kırmızı, Word mavi, PowerPoint turuncu.

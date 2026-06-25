@@ -71,15 +71,8 @@ export default function HomePage() {
   const handleVote = async (m: Material, value: number) => {
     if (!user) { router.push('/auth'); return }
     const current = myVotes[m.id]
-    // Optimistik güncelleme
-    setMaterials(prev => prev.map(x => {
-      if (x.id !== m.id) return x
-      let likes = x.likes, dislikes = x.dislikes
-      if (current === 1) likes--
-      if (current === -1) dislikes--
-      if (current !== value) { if (value === 1) likes++; else dislikes++ }
-      return { ...x, likes, dislikes }
-    }))
+
+    // Önce oy durumunu güncelle
     setMyVotes(prev => {
       const n = { ...prev }
       if (current === value) delete n[m.id]
@@ -87,10 +80,23 @@ export default function HomePage() {
       return n
     })
 
+    // Veritabanına yaz
     if (current === value) {
       await supabase.from('votes').delete().eq('material_id', m.id).eq('user_id', user.id)
     } else {
       await supabase.from('votes').upsert({ material_id: m.id, user_id: user.id, value })
+    }
+
+    // Gerçek sayıyı veritabanından çek
+    const { data } = await supabase
+      .from('materials_with_stats')
+      .select('likes, dislikes')
+      .eq('id', m.id)
+      .single()
+    if (data) {
+      setMaterials(prev => prev.map(x =>
+        x.id === m.id ? { ...x, likes: data.likes, dislikes: data.dislikes } : x
+      ))
     }
   }
 
