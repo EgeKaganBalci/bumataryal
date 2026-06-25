@@ -19,6 +19,30 @@ Sürümler `vX.Y.Z` formatındadır:
 
 ## Değişiklik Geçmişi (Changelog)
 
+### v1.2.1 — Google Drive linki ekleme
+- Yükleme formuna "Drive linki ekle" seçeneği eklendi. Dosya yüklemeyle
+  birlikte veya tek başına Drive linki eklenebilir.
+- Drive dosyaları detay sayfasında Google Drive ikonu ve "Google Drive"
+  etiketiyle ayrı gösterilir; butonu "İndir" değil "Aç" olarak görünür
+  ve tıklanınca Drive'da açılır.
+- Drive dosyasının "Bağlantıya sahip olan herkes görüntüleyebilir"
+  paylaşım ayarında olması gerekir.
+
+### v1.2.0 — Rol sistemi ve yönetim paneli
+- Kurucu, admin ve üye rolleri eklendi.
+- Navbar'da admin/kurucuya özel kalkan ikonu eklendi, tıklayınca
+  yönetim paneli açılır. Normal üyeler paneli göremez.
+- Yönetim paneli 5 sekme: Genel Bakış (istatistikler), Kullanıcılar,
+  Banlılar, Notlar, Loglar.
+- Kurucu istediği kullanıcıya admin yetkisi verip geri alabilir.
+- Admin ve kurucu herhangi bir notu düzenleyip silebilir.
+- Admin ve kurucu anonim notların sahibini görebilir.
+- Ban/unban sistemi: ban sebebi yazılarak kullanıcı askıya alınır.
+- Banlı kullanıcı giriş yapmaya çalışınca "Hesabınız askıya alınmıştır.
+  Sebep: ..." mesajı çıkar.
+- Oturum açıkken banlanan kullanıcının oturumu otomatik kapatılır.
+- Loglar: ban, unban, rol değişikliği ve not silme olayları kayıt altına alınır.
+
 ### v1.1.4 — Beğeni sayacı düzeltmesi
 - Beğeni/beğenmeme butonuna basılınca sayı yanlış görünüyor, F5 ile
   yenilenince farklı bir sayı çıkıyordu. İki ayrı sorun tespit edildi:
@@ -90,6 +114,8 @@ GitHub'a push → Vercel otomatik deploy eder.
 Her sürümün getirdiği veritabanı değişikliği varsa, ilgili SQL dosyası pakette bulunur:
 - `supabase-add-aciklama.sql` — açıklama alanı (v1.0.0 sonrası eklendi)
 - `supabase-v1.1.0.sql` — profil/anonimlik için görünüm güncellemesi
+- `supabase-v1.1.1.sql` — indirme sayacı ve fonksiyon
+- `supabase-v1.2.0.sql` — rol sistemi, ban, loglar, admin paneli
 
 Kodu güncellemek için:
 ```bash
